@@ -8,5 +8,6 @@ Client:
 * Block internet, browser, ... when time expired.
 
 Server:
-* Allow to maintain client configuration (via Web interface).
 * Show howm much time has the user left today.
+* Maintain the client configuration.
+* Allow to configure each client via Web interface.
