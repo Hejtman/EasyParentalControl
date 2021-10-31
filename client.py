@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import sys
-import time
 from pathlib import Path
 from logger import TerminalLogger
 
@@ -19,20 +18,24 @@ class App(guizero.App):
         self.configuration = self.server.retrieve_configuration(client=Unix.get_user_name())
 
         # GUI
-        window_width = window_height = 100
-        super().__init__(title=self.configuration.user, width=window_width, height=window_height, layout='grid')
-        title_bar_size = 30
-        self.tk.geometry(f'+{self.tk.winfo_screenwidth() - window_width}+{self.tk.winfo_screenheight() - window_height - title_bar_size}')
+        super().__init__(title=self.configuration.user, layout='grid')
         self.time_text = guizero.Text(self, text=self.configuration.time_left_min, size=80, font="Times New Roman", color="lightblue", align='top', grid=[0, 0])
-        self.repeat(1000 * self.configuration.loop_time, self.main_loop)
+        self.set_main_window(window_width=150, window_height=100)
+        self.repeat(1000*self.configuration.loop_time, self.main_loop)  # loop_time seconds to ms for repeat
+
+    def set_main_window(self, window_width, window_height, title_bar_size=30) -> None:
+        self.tk.geometry(f'{window_width}x{window_height}+{self.tk.winfo_screenwidth() - window_width}+{self.tk.winfo_screenheight() - window_height - title_bar_size}')  # bottom right
+        self.tk.attributes('-alpha', 0.5)  # half transparent
+        self.tk.attributes('-topmost', 1)  # always on top
+        self.tk.protocol("WM_DELETE_WINDOW", lambda: None)  # un-closable
 
     def warn_if_needed(self) -> None:
         if self.configuration.time_left_sec < self.configuration.warning_time:
             self.logger.info(f'⏰{self.configuration.time_left_sec}')
-            self.time_text.value = f'⏰{self.configuration.time_left_sec}'  # FIXME min
+            self.time_text.value = f'⏰{self.configuration.time_left_min}'
         else:
             self.logger.debug(f'⏰{self.configuration.time_left_sec} too soon for {self.configuration.warning_time}s warning.')
-            self.time_text.value = self.configuration.time_left_sec  # FIXME min
+            self.time_text.value = self.configuration.time_left_min
 
     def kill_if_needed(self) -> None:
         if self.configuration.time_spend_today > self.configuration.daily_limit:
@@ -52,6 +55,7 @@ class App(guizero.App):
 
         self.warn_if_needed()
         self.kill_if_needed()
+        self.show()
 
 
 def main() -> None:

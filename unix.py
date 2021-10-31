@@ -23,7 +23,6 @@ class Unix:
 
     @staticmethod
     def is_running(process: str) -> bool:
-        return True
         return process in Unix.run(['ps', '-A']).stdout
 
     @staticmethod
@@ -47,5 +46,4 @@ if __name__ == '__main__':
     assert not Unix.is_running('not_running_process')
     assert Unix.is_running('system')
     print(Unix.get_user_name())
-    Unix.pop_up(message='test message')
     Unix.kill('chromium-browse')
