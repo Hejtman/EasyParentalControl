@@ -1,14 +1,11 @@
 #!/usr/bin/env python3
 
-import sys
 from pathlib import Path
 from logger import TerminalLogger
 
+import guizero
 from unix import Unix
 from server_api import ServerAPI
-
-sys.path.insert(0, f'{Path.home()}/Library/Python/3.8/lib/python/site-packages')  # FIXME: rather copy source-code to this repo
-import guizero
 
 
 class App(guizero.App):
