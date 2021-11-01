@@ -5,13 +5,14 @@ from logger import TerminalLogger
 
 import guizero
 from unix import Unix
+from utils import conditional_action
 from server_api import ServerAPI
 
 
 class App(guizero.App):
     def __init__(self):
         self.logger = TerminalLogger(file_path=f'{Path(Path.home(), Path(__file__).stem)}.log')
-        self.server = ServerAPI(ip='192.168.1.1')  # FIXME: mv ip to client configuration
+        self.server = ServerAPI(ip='192.168.1.1')  # FIXME: mv ip to client configuration - commandline arg?
         self.configuration = self.server.retrieve_configuration(client=Unix.get_user_name())
 
         # GUI
@@ -26,22 +27,17 @@ class App(guizero.App):
         self.tk.attributes('-topmost', 1)  # always on top
         self.tk.protocol("WM_DELETE_WINDOW", lambda: None)  # un-closable
 
-    def warn_if_needed(self) -> None:
-        if self.configuration.time_left_sec < self.configuration.warning_time:
-            self.logger.info(f'⏰{self.configuration.time_left_sec}')
-            self.time_text.value = f'⏰{self.configuration.time_left_min}'
+    def process_time_left(self) -> None:
+        if self.configuration.time_left_sec <= 0:
+            icon = '☠️'
+            conditional_action(condition=Unix.is_running(self.configuration.process), action=Unix.kill, process=self.configuration.process)
+        elif self.configuration.time_left_sec < self.configuration.warning_time:
+            icon = '⏰'
+            conditional_action(condition=Unix.is_running(self.configuration.process), action=self.show)  # show the main window (in case it was hidden)
         else:
-            self.logger.debug(f'⏰{self.configuration.time_left_sec} too soon for {self.configuration.warning_time}s warning.')
-            self.time_text.value = self.configuration.time_left_min
+            icon = ''
 
-    def kill_if_needed(self) -> None:
-        if self.configuration.time_spend_today > self.configuration.daily_limit:
-            if Unix.is_running(self.configuration.process):
-                self.logger.info(f'☠️{self.configuration.process}')
-                self.time_text.value = f'☠️'
-                Unix.kill(process=self.configuration.process)
-            else:
-                self.logger.debug(f'☠️Noting to kill. {self.configuration.process} is not running.')
+        self.time_text.value = f'{icon}{self.configuration.time_left_min}'
 
     def main_loop(self):
         if Unix.is_running(process=self.configuration.process):
@@ -50,9 +46,7 @@ class App(guizero.App):
         self.configuration = self.server.retrieve_configuration(client=Unix.get_user_name())
         self.logger.debug(f'spend/limit = {self.configuration.time_spend_today} / {self.configuration.daily_limit} ({self.configuration.time_left_sec})')
 
-        self.warn_if_needed()
-        self.kill_if_needed()
-        self.show()
+        self.process_time_left()
 
 
 def main() -> None:

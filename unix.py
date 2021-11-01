@@ -12,6 +12,12 @@ class Result:
             self.stdout = self.stdout.strip()
             self.stderr = self.stderr.strip()
 
+    def __str__(self):
+        s = str(self.return_code)
+        s += '\n' + self.stdout if self.stdout else ''
+        s += '\n' + self.stderr if self.stderr else ''
+        return s
+
 
 class Unix:
     """Implements OS dependent calls"""
@@ -30,9 +36,8 @@ class Unix:
         return Unix.run(['hostname']).stdout
 
     @staticmethod
-    def kill(process: str, message: str='') -> Result:
-        logger.info(f'killing {process} ({message})')
-        # TODO pop some sorry message
+    def kill(process: str) -> Result:
+        logger.info(f'killing {process}')
         result = Unix.run(['pkill', process])
         logger.error(f'pkill {process} failed: {result}') if result.return_code else logger.info('Killing successful')
         return result
