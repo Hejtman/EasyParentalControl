@@ -3,9 +3,9 @@ Parental control utility. Intended to limit browser use for 2h a day.
 
 Client:
 * Periodically retrieve the client configuration from server.
-* Reports user activity.
-* Pop-up warnings when time is about to expire.
-* Block internet, browser, ... when time expired.
+* Reports user activity to server.
+* Show small topmost, half-transparent, un-closable window with countdown (guizero/tkinter).
+* Kills internet browser when time has expired.
 
 Server:
 * Show howm much time has the user left today.
