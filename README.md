@@ -6,7 +6,8 @@ Client:
 * Reports user activity to server.
 * Show small topmost, half-transparent, un-closable window with countdown (guizero/tkinter).
 * Kills internet browser when time has expired.
-
+* Install on Raspberry pi by: $sudo ./install_client.sh
+ 
 Server:
 * Show howm much time has the user left today.
 * Maintain the client configuration.

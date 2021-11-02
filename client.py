@@ -13,7 +13,7 @@ class App(guizero.App):
     def __init__(self):
         self.logger = TerminalLogger(file_path=f'{Path(Path.home(), Path(__file__).stem)}.log')
         self.server = ServerAPI(ip='192.168.1.1')  # FIXME: mv ip to client configuration - commandline arg?
-        self.configuration = self.server.retrieve_configuration(client=Unix.get_user_name())
+        self.configuration = self.server.sync_configuration(client=Unix.get_user_name(), time_spend=0)
 
         # GUI
         super().__init__(title=self.configuration.user, layout='grid')
@@ -40,12 +40,9 @@ class App(guizero.App):
         self.time_text.value = f'{icon}{self.configuration.time_left_min}'
 
     def main_loop(self):
-        if Unix.is_running(process=self.configuration.process):
-            self.server.report_use(time_spend=self.configuration.loop_time)
-
-        self.configuration = self.server.retrieve_configuration(client=Unix.get_user_name())
+        self.configuration = self.server.sync_configuration(client=Unix.get_user_name(),
+                                                            time_spend=self.configuration.loop_time if Unix.is_running(self.configuration.process) else 0)
         self.logger.debug(f'spend/limit = {self.configuration.time_spend_today} / {self.configuration.daily_limit} ({self.configuration.time_left_sec})')
-
         self.process_time_left()
 
 
