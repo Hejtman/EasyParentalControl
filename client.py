@@ -17,7 +17,7 @@ class App(guizero.App):
 
         # GUI
         super().__init__(title=self.configuration.user, layout='grid')
-        self.time_text = guizero.Text(self, text=self.configuration.time_left_min, size=80, font="Times New Roman", color="lightblue", align='top', grid=[0, 0])
+        self.time_text = guizero.Text(self, text=self.configuration.time_left_min, size=75, font="Times New Roman", color="lightblue", align='top', grid=[0, 0])
         self.set_main_window(window_width=150, window_height=100)
         self.repeat(1000*self.configuration.loop_time, self.main_loop)  # loop_time seconds to ms for repeat
 
