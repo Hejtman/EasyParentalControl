@@ -1,19 +1,18 @@
 #!/usr/bin/env python3
 
-from pathlib import Path
-from logger import TerminalLogger
-
 import guizero
+
+from logger import TerminalLogger
 from unix import Unix
 from utils import conditional_action
-from server_api import ServerAPI
+from client_communication import ClientCommunication
 
 
 class App(guizero.App):
     def __init__(self):
-        self.logger = TerminalLogger(file_path=f'{Path(Path.home(), Path(__file__).stem)}.log')
-        self.server = ServerAPI(ip='192.168.1.1')  # FIXME: mv ip to client configuration - commandline arg?
-        self.configuration = self.server.sync_configuration(client=Unix.get_user_name(), time_spend=0)
+        self.logger = TerminalLogger(file_path=__file__.replace('py', 'log'))  # FIXME: log to project dir
+        self.server = ClientCommunication(ip='localhost', port=9999)  # FIXME: mv ip to client configuration - commandline arg?
+        self.configuration = self.server.sync_configuration(time_spend=0)
 
         # GUI
         super().__init__(title=self.configuration.user, layout='grid')
@@ -40,8 +39,7 @@ class App(guizero.App):
         self.time_text.value = f'{icon}{self.configuration.time_left_min}'
 
     def main_loop(self):
-        self.configuration = self.server.sync_configuration(client=Unix.get_user_name(),
-                                                            time_spend=self.configuration.loop_time if Unix.is_running(self.configuration.process) else 0)
+        self.configuration = self.server.sync_configuration(time_spend=self.configuration.loop_time if Unix.is_running(self.configuration.process) else 0)
         self.logger.debug(f'spend/limit = {self.configuration.time_spend_today} / {self.configuration.daily_limit} ({self.configuration.time_left_sec})')
         self.process_time_left()
 

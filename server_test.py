@@ -7,7 +7,6 @@ import server
 
 def test_server():
     logger = logging.getLogger('client')
-    logger.setLevel(logging.DEBUG)
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     logger.debug('connecting to server localhost 9999')
     s.connect(('localhost', 9999))
@@ -17,5 +16,6 @@ def test_server():
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)
     server.main()
     test_server()

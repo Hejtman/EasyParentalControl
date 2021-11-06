@@ -1,0 +1,24 @@
+2021-11-06 20:36:47,064 - logger - DEBUG - sending time_spend=0 to server localhost:9999
+2021-11-06 20:36:47,073 - logger - CRITICAL - Unhandled exception
+Traceback (most recent call last):
+  File "/Users/michalhejtmanek/git/EasyParentalControl/./client.py", line 55, in <module>
+    main()
+  File "/Users/michalhejtmanek/git/EasyParentalControl/./client.py", line 48, in main
+    app = App()
+  File "/Users/michalhejtmanek/git/EasyParentalControl/./client.py", line 15, in __init__
+    self.configuration = self.server.sync_configuration(time_spend=0)
+  File "/Users/michalhejtmanek/git/EasyParentalControl/client_communication.py", line 18, in sync_configuration
+    s.connect((self.ip, self.port))
+ConnectionRefusedError: [Errno 61] Connection refused
+2021-11-06 20:41:09,969 - logger - DEBUG - sending time_spend=0 to server localhost:9999
+2021-11-06 20:41:09,975 - logger - CRITICAL - Unhandled exception
+Traceback (most recent call last):
+  File "/Users/michalhejtmanek/git/EasyParentalControl/./client.py", line 55, in <module>
+    main()
+  File "/Users/michalhejtmanek/git/EasyParentalControl/./client.py", line 48, in main
+    app = App()
+  File "/Users/michalhejtmanek/git/EasyParentalControl/./client.py", line 15, in __init__
+    self.configuration = self.server.sync_configuration(time_spend=0)
+  File "/Users/michalhejtmanek/git/EasyParentalControl/client_communication.py", line 18, in sync_configuration
+    s.connect((self.ip, self.port))
+ConnectionRefusedError: [Errno 61] Connection refused
