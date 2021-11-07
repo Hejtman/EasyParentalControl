@@ -22,7 +22,7 @@ def main():
     t.start()
 
     while True:
-        time.sleep(1)
+        time.sleep(1)  # TODO: start WEB
 
 
 if __name__ == "__main__":

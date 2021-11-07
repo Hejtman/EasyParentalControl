@@ -4,7 +4,8 @@ from datetime import date
 
 @dataclass
 class ClientConfiguration:
-    user: str
+    ip: str
+    user: str = ''                      # custom user identification
     process: str = 'chromium-browse'    # process to detect and block when time limit is reached
     daily_limit: int = 2*3600           # granted seconds of daily use of process (2h)
     time_spend_today: int = 0           # already used seconds
@@ -19,3 +20,9 @@ class ClientConfiguration:
     @property
     def time_left_min(self) -> int:
         return int(self.time_left_sec/60)
+
+    def validate(self) -> None:
+        today = date.today()
+        if self.date_recorded != today:
+            self.date_recorded = today
+            self.time_spend_today = 0

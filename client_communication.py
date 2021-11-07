@@ -1,14 +1,14 @@
+import logging
 import socket
 import pickle
 
-from logger import TerminalLogger
 from server_communication import CommunicationProtocol
 from configuration import ClientConfiguration
 
 
 class ClientCommunication(CommunicationProtocol):
     def __init__(self, ip: str = CommunicationProtocol.ip, port: int = CommunicationProtocol.port):
-        self.logger = TerminalLogger(file_path=__file__.replace('py', 'log'))  # FIXME: log to project dir
+        self.logger = logging.getLogger('Client')
         self.ip = ip
         self.port = port
 

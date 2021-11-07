@@ -32,9 +32,11 @@ class ConfigSyncHandler(socketserver.BaseRequestHandler, CommunicationProtocol):
         ))
 
     def sync_configuration(self, time_spend: int) -> ClientConfiguration:
-        # TODO: self.client_address[0] > client
-        self.logger.info(f'time_spend received from {self.client_address[0]}: {time_spend} {type(time_spend)}')
-        self.configs.configs.time_spend_today += time_spend
+        client_ip = self.client_address[0]
+        self.logger.info(f'time_spend received from {client_ip}: {time_spend} {type(time_spend)}')
+        client_config = self.configs[client_ip]
+        client_config.validate()
+        client_config.time_spend_today += time_spend
         self.configs.save()
-        self.logger.info(f'sending back {self.client_address[0]}: {self.configs.configs}')
-        return self.configs.configs
+        self.logger.info(f'sending back {client_ip}: {client_config}')
+        return client_config
