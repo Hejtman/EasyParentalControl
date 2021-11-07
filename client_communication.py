@@ -7,7 +7,7 @@ from configuration import ClientConfiguration
 
 
 class ClientCommunication(CommunicationProtocol):
-    def __init__(self, ip: str, port: int):
+    def __init__(self, ip: str = CommunicationProtocol.ip, port: int = CommunicationProtocol.port):
         self.logger = TerminalLogger(file_path=__file__.replace('py', 'log'))  # FIXME: log to project dir
         self.ip = ip
         self.port = port
@@ -18,8 +18,10 @@ class ClientCommunication(CommunicationProtocol):
         s.connect((self.ip, self.port))
 
         s.send(pickle.dumps(time_spend, -1))
-        config = pickle.loads(s.recv(1024))
+        raw_data = s.recv(1024)
+        self.logger.debug(f'recieved ({len(raw_data)}): {raw_data}')
 
+        config = pickle.loads(raw_data)
         self.logger.debug(f'recieved {config}')
         s.close()
         return config

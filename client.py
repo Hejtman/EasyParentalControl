@@ -10,8 +10,8 @@ from client_communication import ClientCommunication
 
 class App(guizero.App):
     def __init__(self):
-        self.logger = TerminalLogger(file_path=__file__.replace('py', 'log'))  # FIXME: log to project dir
-        self.server = ClientCommunication(ip='localhost', port=9999)  # FIXME: mv ip to client configuration - commandline arg?
+        self.logger = TerminalLogger(file_path=__file__.replace('py', 'log'))
+        self.server = ClientCommunication()
         self.configuration = self.server.sync_configuration(time_spend=0)
 
         # GUI

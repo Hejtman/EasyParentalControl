@@ -1,4 +1,7 @@
-from datetime import date, datetime
+import pickle
+from datetime import date
+
+from configuration import ClientConfiguration
 
 
 class PersistentConfigs:
@@ -8,24 +11,22 @@ class PersistentConfigs:
     def __init__(self):
         self.configs = self.load()
 
-    def load(self) -> list:
+    def load(self) -> ClientConfiguration:
         try:
-            with open(self.persistent_storage) as f:
-                sum_time_spend, date_record = f.read().splitlines()  # FIXME: dict with proper user selection
-                date_record = datetime.strptime(date_record, self.date_format).date()
-                if date_record != date.today():
-                    return self._new_day_config()
-            return [int(sum_time_spend), date_record]
+            with open(self.persistent_storage, 'rb') as f:
+                configs = pickle.load(f)
+                if configs.date_recorded != date.today():
+                    configs = self._new_day_config()
         except FileNotFoundError:
-            return self._new_day_config()
+            configs = self._new_day_config()
+        return configs
 
     def save(self) -> None:
-        if self.configs[1] != date.today():
+        if self.configs.date_recorded != date.today():
             self.configs = self._new_day_config()
-        with open(self.persistent_storage, 'w') as f:
-            f.write(f'{self.configs[0]}\n{self.configs[1]}')
+        with open(self.persistent_storage, 'wb') as f:
+            pickle.dump(self.configs, f, protocol=0)
 
     @staticmethod
-    def _new_day_config() -> list:
-        time_spent_today = 0
-        return [time_spent_today, date.today()]
+    def _new_day_config() -> ClientConfiguration:
+        return ClientConfiguration(user='D')

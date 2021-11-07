@@ -9,6 +9,9 @@ from configuration import ClientConfiguration
 
 
 class CommunicationProtocol(ABC):
+    ip = 'localhost'
+    port = 9999
+
     @abstractmethod
     def sync_configuration(self, time_spend: int) -> ClientConfiguration:
         pass
@@ -31,7 +34,7 @@ class ConfigSyncHandler(socketserver.BaseRequestHandler, CommunicationProtocol):
     def sync_configuration(self, time_spend: int) -> ClientConfiguration:
         # TODO: self.client_address[0] > client
         self.logger.info(f'time_spend received from {self.client_address[0]}: {time_spend} {type(time_spend)}')
-        self.configs.configs[0] += time_spend
+        self.configs.configs.time_spend_today += time_spend
         self.configs.save()
         self.logger.info(f'sending back {self.client_address[0]}: {self.configs.configs}')
         return self.configs.configs
