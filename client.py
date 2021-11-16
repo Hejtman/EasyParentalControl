@@ -27,10 +27,10 @@ class App(guizero.App):
         self.tk.protocol("WM_DELETE_WINDOW", lambda: None)  # un-closable
 
     def process_time_left(self) -> None:
-        if self.configuration.time_left_sec <= 0:
+        if self.configuration.time_left_today <= 0:
             icon = '☠️'
             conditional_action(condition=Unix.is_running(self.configuration.process), action=Unix.kill, process=self.configuration.process)
-        elif self.configuration.time_left_sec < self.configuration.warning_time:
+        elif self.configuration.time_left_today < self.configuration.warning_time:
             icon = '⏰'
             conditional_action(condition=Unix.is_running(self.configuration.process), action=self.show)  # show the main window (in case it was hidden)
         else:
@@ -40,7 +40,7 @@ class App(guizero.App):
 
     def main_loop(self):
         self.configuration = self.server.sync_configuration(time_spend=self.configuration.loop_time if Unix.is_running(self.configuration.process) else 0)
-        self.logger.debug(f'spend/limit = {self.configuration.time_spend_today} / {self.configuration.daily_limit} ({self.configuration.time_left_sec})')
+        self.logger.debug(f'spend/limit = {self.configuration.time_spend_today} / {self.configuration.daily_limit} ({self.configuration.time_left_today})')
         self.process_time_left()
 
 
