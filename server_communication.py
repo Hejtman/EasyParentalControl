@@ -36,6 +36,7 @@ class ConfigSyncHandler(socketserver.BaseRequestHandler, CommunicationProtocol):
         self.logger.info(f'time_spend received from {client_ip}: {time_spend} {type(time_spend)}')
         client_config = self.configs[client_ip]
         client_config.validate()
+        client_config.time_left_today -= time_spend
         client_config.time_spend_today += time_spend
         self.configs.save()
         self.logger.info(f'sending back {client_ip}: {client_config}')

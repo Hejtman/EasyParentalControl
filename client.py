@@ -40,7 +40,7 @@ class App(guizero.App):
 
     def main_loop(self):
         self.configuration = self.server.sync_configuration(time_spend=self.configuration.loop_time if Unix.is_running(self.configuration.process) else 0)
-        self.logger.debug(f'spend/limit = {self.configuration.time_spend_today} / {self.configuration.daily_limit} ({self.configuration.time_left_today})')
+        self.logger.debug(f'spend/limit = {self.configuration.time_left_today} / {self.configuration.daily_limit}')
         self.process_time_left()
 
 
