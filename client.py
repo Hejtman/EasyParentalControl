@@ -16,7 +16,7 @@ class App(guizero.App):
 
         # GUI
         super().__init__(title=self.configuration.user, layout='grid')
-        self.time_text = guizero.Text(self, text=self.configuration.time_left_min, size=75, font="Times New Roman", color="lightblue", align='top', grid=[0, 0])
+        self.time_text = guizero.Text(self, text='', size=60, font="Times New Roman", color="lightblue", align='top', grid=[0, 0])
         self.set_main_window(window_width=150, window_height=100)
         self.repeat(1000*self.configuration.loop_time, self.main_loop)  # loop_time seconds to ms for repeat
 
@@ -25,9 +25,12 @@ class App(guizero.App):
         self.tk.attributes('-alpha', 0.5)  # half transparent
         self.tk.attributes('-topmost', 1)  # always on top
         self.tk.protocol("WM_DELETE_WINDOW", lambda: None)  # un-closable
+        self.process_time_left()
 
     def process_time_left(self) -> None:
-        if self.configuration.time_left_today <= 0:
+        if not self.configuration.server_connected:
+            icon = '🔌'
+        elif self.configuration.time_left_today <= 0:
             icon = '☠️'
             conditional_action(condition=Unix.is_running(self.configuration.process), action=Unix.kill, process=self.configuration.process)
         elif self.configuration.time_left_today < self.configuration.warning_time:

@@ -3,18 +3,9 @@ import pickle
 import socketserver
 
 from configs import PersistentConfigs
-from abc import ABC, abstractmethod
 
 from configuration import ClientConfiguration
-
-
-class CommunicationProtocol(ABC):
-    ip = 'localhost'
-    port = 9999
-
-    @abstractmethod
-    def sync_configuration(self, time_spend: int) -> ClientConfiguration:
-        pass
+from communication_protocol import CommunicationProtocol
 
 
 # TODO file logger

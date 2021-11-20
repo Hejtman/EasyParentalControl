@@ -3,7 +3,6 @@
 import socketserver
 import threading
 import bottle
-import time
 
 from logger import TerminalLogger
 from server_communication import ConfigSyncHandler
@@ -12,7 +11,7 @@ DEBUG = True
 
 
 class ConfigSyncServer(socketserver.TCPServer):
-    def __init__(self, ip: str = ConfigSyncHandler.ip, port: int = ConfigSyncHandler.port, web_port: int = 8080, handler_class=ConfigSyncHandler):
+    def __init__(self, ip: str = ConfigSyncHandler.server_ip, port: int = ConfigSyncHandler.server_port, web_port: int = 8080, handler_class=ConfigSyncHandler):
         self.web_port = web_port
         self.logger = TerminalLogger(file_path=__file__.replace('py', 'log'))
         self.logger.debug(f'server init: {ip}:{port}')
@@ -22,7 +21,7 @@ class ConfigSyncServer(socketserver.TCPServer):
             socketserver.TCPServer.__init__(self, (ip, port), handler_class)  # daemonised (second instance)
 
     def start_web_loop(self):
-        bottle.run(host=ConfigSyncHandler.ip, port=self.web_port, reloader=DEBUG)
+        bottle.run(host=ConfigSyncHandler.server_ip, port=self.web_port, reloader=DEBUG)
 
 
 def main():
@@ -30,15 +29,12 @@ def main():
     def index():
         short_config = ''
         for c in ConfigSyncHandler.configs.configs:
-            short_config += f'<form action="/modify_time_left" method="post"> {c.user if c.user else c.ip}:\t{c.time_left_min}' \
+            short_config += f'<form action="/modify_time_left" method="post"> {c.user if c.user else c.client_ip}:\t{c.time_left_min}' \
                             f'<input name="+10" value="+10" type="submit"/>' \
                             f'<input name="-10" value="-10" type="submit"/>' \
                             f'<input name="BAN" value="BAN" type="submit"/>' \
                             f'</form>'
-        return f'''
-        <meta http-equiv="refresh" content="60">
-        {short_config}
-        '''
+        return f'<meta http-equiv="refresh" content="60">{short_config}'
 
     @bottle.post('/modify_time_left')
     def add_time():
@@ -63,7 +59,7 @@ def main():
 
     s = ConfigSyncServer()
     t = threading.Thread(target=s.serve_forever)
-    t.setDaemon(True)
+    t.daemon = True
     t.start()
     s.start_web_loop()
 

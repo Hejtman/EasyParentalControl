@@ -4,8 +4,10 @@ from datetime import date
 
 @dataclass
 class ClientConfiguration:
-    ip: str
+    client_ip: str
+    server_ip: str
     user: str = ''                      # custom user identification
+    server_connected: bool = False      # client will show whether has connection with server or not
     process: str = 'chromium-browse'    # process to detect and block when time limit is reached
     daily_limit: int = 2*3600           # granted seconds of daily use of process (2h)
     time_spend_today: int = 0           # already used seconds
