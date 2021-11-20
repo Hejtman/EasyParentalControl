@@ -20,11 +20,11 @@ class ClientCommunication(CommunicationProtocol):
         except ConnectionRefusedError:
             return ClientConfiguration(client_ip='TODO', server_ip=self.server_ip, server_connected=False)
 
-        s.send(pickle.dumps(time_spend, -1))
+        s.send(pickle.dumps(time_spend, CommunicationProtocol.pickle_protocol))
         raw_data = s.recv(1024)
-        self.logger.debug(f'recieved ({len(raw_data)}): {raw_data}')
+        self.logger.debug(f'received ({len(raw_data)}): {raw_data}')
 
         config = pickle.loads(raw_data)
-        self.logger.debug(f'recieved {config}')
+        self.logger.debug(f'received {config}')
         s.close()
         return config
