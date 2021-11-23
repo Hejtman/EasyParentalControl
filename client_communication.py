@@ -7,10 +7,13 @@ from configuration import ClientConfiguration
 
 
 class ClientCommunication(CommunicationProtocol):
+    COMMUNICATION_TIMEOUT = 10  # should be enough for local network of any kind
+
     def __init__(self, client_ip: str = CommunicationProtocol.server_ip, port: int = CommunicationProtocol.server_port):
         self.logger = logging.getLogger('Client')
         self.server_ip = client_ip
         self.server_port = port
+        socket.setdefaulttimeout(self.COMMUNICATION_TIMEOUT)
 
     def sync_configuration(self, time_spend: int) -> ClientConfiguration:
         self.logger.debug(f'sending time_spend={time_spend} to server {self.server_ip}:{self.server_port}')

@@ -16,6 +16,7 @@ class ConfigSyncHandler(socketserver.BaseRequestHandler, CommunicationProtocol):
         self.logger = logging.getLogger('ConfigSyncHandler')
         self.logger.debug(f'__init__: {client_address}')
         socketserver.BaseRequestHandler.__init__(self, request, client_address, server)
+        self.timeout = 10
 
     def handle(self):
         self.request.send(pickle.dumps(
