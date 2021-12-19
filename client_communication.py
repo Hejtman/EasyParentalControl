@@ -20,7 +20,7 @@ class ClientCommunication(CommunicationProtocol):
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             s.connect((self.server_ip, self.server_port))
-        except ConnectionRefusedError:
+        except (ConnectionRefusedError, OSError):
             return ClientConfiguration(client_ip='TODO', server_ip=self.server_ip, server_connected=False)
 
         s.send(pickle.dumps(time_spend, CommunicationProtocol.pickle_protocol))
