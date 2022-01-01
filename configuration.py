@@ -29,3 +29,4 @@ class ClientConfiguration:
         if self.date_recorded != today:
             self.date_recorded = today
             self.time_spend_today = 0
+            self.time_left_today = self.daily_limit

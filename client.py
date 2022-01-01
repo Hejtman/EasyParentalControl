@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import guizero
+from time import sleep
 
 from logger import TerminalLogger
 from unix import Unix
@@ -55,4 +56,5 @@ def main() -> None:
 
 
 if __name__ == '__main__':
+    sleep(30)  # give raspberry time to start X server session
     main()
