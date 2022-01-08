@@ -1,3 +1,5 @@
+import logging
+
 from dataclasses import dataclass
 from datetime import date
 
@@ -26,7 +28,10 @@ class ClientConfiguration:
 
     def validate(self) -> None:
         today = date.today()
-        if self.date_recorded != today:
+        if self.date_recorded == today:
+            logging.debug(f'config valid: ({self.date_recorded} == {today})')
+        else:
             self.date_recorded = today
             self.time_spend_today = 0
             self.time_left_today = self.daily_limit
+            logging.debug(f'config old: ({self.date_recorded} != {today}) - re-setting limits')
